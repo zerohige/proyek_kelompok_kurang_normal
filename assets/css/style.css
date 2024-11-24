@@ -14,6 +14,33 @@ body {
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
 }
 
+
+    .header-container {
+        background-color: #00274d; /* Warna biru seperti di gambar */
+        color: black; /* Warna teks putih */
+        padding: 15px 30px; /* Ruang di dalam header */
+    }
+    .header-container .logo {
+        max-width: 60px; /* Ukuran logo */
+        margin-right: 15px; /* Jarak antara logo dan nama kampus */
+    }
+    .header-container .campus-name h1,
+    .header-container .campus-name h2 {
+        margin: 0; /* Hilangkan margin default */
+        line-height: 1.2; /* Sesuaikan jarak baris */
+        font-family: 'Arial', sans-serif; /* Pilih font yang sederhana */
+    }
+    .header-container .campus-name h1 {
+        font-size: 18px; /* Ukuran teks "UNIVERSITAS" */
+        font-weight: bold;
+    }
+    .header-container .campus-name h2 {
+        font-size: 24px; /* Ukuran teks "GADJAH MADA" */
+        font-weight: bold;
+    }
+
+
+
 h1, h2 {
     text-align: center;
     margin-bottom: 20px;
@@ -42,8 +69,7 @@ nav ul li a {
 }
 
 nav ul li a:hover {
-    background-color: #007bff;
-    color: #fff;
+    color: white;
 }
 
 form {
@@ -53,7 +79,7 @@ form {
 form input, form select, form button {
     padding: 10px;
     margin: 5px 0;
-    border: 1px solid #ccc;
+    border: 1px solid ;
     border-radius: 5px;
     width: 100%;
     box-sizing: border-box;

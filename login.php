@@ -27,6 +27,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
+    <div class="header-container">
+        <div class="d-flex align-items-center">
+            <!-- Logo Kampus -->
+            <img src="assets/gambar/fttk1.png" alt="Logo Kampus" style="max-width: 200px; height: auto;">
+            <!-- Nama Kampus -->
+            <div class="campus-name">
+        </div>
+    </div>
     <div class="container">
         <h1>Login Admin</h1>
         <form action="login.php" method="POST">

@@ -8,7 +8,7 @@ date_default_timezone_set('Asia/Jakarta');
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formulir Permintaan Barang</title>
+    <title>Jurnal Pengambilan ATK</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
@@ -41,10 +41,21 @@ date_default_timezone_set('Asia/Jakarta');
     </style>
 </head>
 <body>
+    <div class="header-container">
+        <div class="d-flex align-items-center">
+            <!-- Logo Kampus -->
+            <img src="assets/gambar/fttk1.png" alt="Logo Kampus" style="max-width: 200px; height: auto;">
+            <!-- Nama Kampus -->
+            <div class="campus-name">
+        </div>
+    </div>
+
     <div class="container mt-5">
         <h1 class="text-center mb-4">Formulir Permintaan Barang</h1>
+        <h2 class="text-center mb-4">Fakultas Teknik dan Teknologi Kemaritiman</h2>
         <div class="d-flex justify-content-end">
             <a href="login.php" class="login-button">Login sebagai Admin</a>
+            <link rel="stylesheet" href="assets/css/style.css">
         </div>
         <form action="config/request.php" method="POST" class="needs-validation" novalidate>
             <!-- Informasi Pemohon -->
@@ -60,8 +71,14 @@ date_default_timezone_set('Asia/Jakarta');
             </div>
             <div class="mb-3">
                 <label for="departemen" class="form-label">Departemen:</label>
-                <input type="text" id="departemen" name="departemen" class="form-control" required>
-                <div class="invalid-feedback">Departemen wajib diisi.</div>
+                <select id="departemen" name="departemen" class="form-select" required>
+                    <option value="">-- Pilih Departemen --</option>
+                    <option value="Mahasiswa">Mahasiswa</option>
+                    <option value="Dosen">Dosen</option>
+                    <option value="Tenaga Pengajar">Tenaga Pengajar</option>
+                    <option value="Staff TU">Staff TU</option>
+                </select>
+                <div class="invalid-feedback">Pilih departemen yang sesuai.</div>
             </div>
             <div class="mb-3">
                 <label for="telepon" class="form-label">Nomor Telepon:</label>
@@ -70,7 +87,7 @@ date_default_timezone_set('Asia/Jakarta');
             </div>
             <div class="mb-3">
                 <label for="tanggal" class="form-label">Tanggal:</label>
-                <input type="text" id="tanggal" name="tanggal" class="form-control" value="<?= date('Y-m-d H:i:s') ?>" readonly>
+                <input type="text" id="tanggal" name="tanggal" class="form-control" value="<?= date('Y-m-d H:i') ?>" readonly>
             </div>
             <!-- Barang dan Stok -->
             <div class="mb-3">

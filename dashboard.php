@@ -59,6 +59,14 @@ if (!$result_barang) {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
+<div class="header-container">
+        <div class="d-flex align-items-center">
+            <!-- Logo Kampus -->
+            <img src="assets/gambar/fttk1.png" alt="Logo Kampus" style="max-width: 200px; height: auto;">
+            <!-- Nama Kampus -->
+            <div class="campus-name">
+        </div>
+    </div>
     <div class="container mt-5">
         <h1 class="text-center mb-4">Dashboard Admin</h1>
         <nav class="mb-4">
@@ -68,6 +76,7 @@ if (!$result_barang) {
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="permintaan.php">Permintaan Barang</a>
+                    <link rel="stylesheet" href="assets/css/style.css">
                 </li>
             </ul>
         </nav>

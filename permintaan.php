@@ -51,12 +51,21 @@ if (!$result_permintaan) {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
+    <div class="header-container">
+        <div class="d-flex align-items-center">
+            <!-- Logo Kampus -->
+            <img src="assets/gambar/fttk1.png" alt="Logo Kampus" style="max-width: 200px; height: auto;">
+            <!-- Nama Kampus -->
+            <div class="campus-name">
+        </div>
+    </div>
     <div class="container mt-5">
         <h1 class="text-center mb-4">Permintaan Barang</h1>
         <nav class="mb-4">
             <ul class="nav nav-pills justify-content-center">
                 <li class="nav-item">
                     <a class="nav-link" href="dashboard.php">Dashboard</a>
+                    <link rel="stylesheet" href="assets/css/style.css">
                 </li>
             </ul>
         </nav>
@@ -71,7 +80,7 @@ if (!$result_permintaan) {
                 <thead class="table-dark">
                     <tr>
                         <th>Nama</th>
-                        <th>ID Pemohon</th>
+                        <th>ID</th>
                         <th>Departemen</th>
                         <th>Barang</th>
                         <th>Tanggal</th>
