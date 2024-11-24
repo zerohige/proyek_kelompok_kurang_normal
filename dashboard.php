@@ -30,13 +30,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['nama_barang'], $_POST
     }
 }
 
-// Ambil data barang tanpa duplikasi
-$query_barang = "SELECT DISTINCT * FROM barang";
+// Bagian untuk menghapus barang
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
+    $delete_id = intval($_POST['delete_id']);
+    $delete_query = "DELETE FROM barang WHERE id = $delete_id";
+    if ($conn->query($delete_query)) {
+        echo "<script>alert('Barang berhasil dihapus!'); window.location.href = 'dashboard.php';</script>";
+    } else {
+        echo "<script>alert('Gagal menghapus barang: " . $conn->error . "'); window.history.back();</script>";
+    }
+}
+
+// Ambil data barang
+$query_barang = "SELECT * FROM barang";
 $result_barang = $conn->query($query_barang);
 
-// Ambil data permintaan barang tanpa duplikasi
-$query_permintaan = "SELECT DISTINCT * FROM permintaan_barang";
-$result_permintaan = $conn->query($query_permintaan);
+if (!$result_barang) {
+    die("Error dalam query barang: " . $conn->error);
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -44,98 +55,67 @@ $result_permintaan = $conn->query($query_permintaan);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Admin</title>
-    <link rel="stylesheet" href="assets/css/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
-    <div class="container">
-        <h1>Dashboard Admin</h1>
-        <nav>
-            <ul>
-                <li><a href="#manage-items">Manajemen Barang</a></li>
-                <li><a href="#requests">Permintaan Barang</a></li>
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Dashboard Admin</h1>
+        <nav class="mb-4">
+            <ul class="nav nav-pills justify-content-center">
+                <li class="nav-item">
+                    <a class="nav-link active" href="#manage-items">Manajemen Barang</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="permintaan.php">Permintaan Barang</a>
+                </li>
             </ul>
         </nav>
 
         <!-- Manajemen Barang -->
-        <section id="manage-items">
-            <h2>Manajemen Barang</h2>
-            <form action="" method="POST">
-                <label for="nama_barang">Nama Barang:</label>
-                <input type="text" id="nama_barang" name="nama_barang" required>
-                <label for="stok">Stok:</label>
-                <input type="number" id="stok" name="stok" required>
-                <button type="submit">Tambah Barang</button>
+        <section id="manage-items" class="mb-5">
+            <h2 class="text-center mb-4">Manajemen Barang</h2>
+            <form action="" method="POST" class="row g-3">
+                <div class="col-md-6">
+                    <label for="nama_barang" class="form-label">Nama Barang:</label>
+                    <input type="text" id="nama_barang" name="nama_barang" class="form-control" required>
+                </div>
+                <div class="col-md-6">
+                    <label for="stok" class="form-label">Stok:</label>
+                    <input type="number" id="stok" name="stok" class="form-control" required>
+                </div>
+                <div class="col-12 text-center">
+                    <button type="submit" class="btn btn-success">Tambah Barang</button>
+                </div>
             </form>
-            <table border="1">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Nama Barang</th>
-                        <th>Stok</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php while ($row = $result_barang->fetch_assoc()): ?>
+            <div class="table-responsive mt-4">
+                <table class="table table-bordered table-hover">
+                    <thead class="table-dark">
                         <tr>
-                            <td><?= htmlspecialchars($row['id']) ?></td>
-                            <td><?= htmlspecialchars($row['nama_barang']) ?></td>
-                            <td><?= htmlspecialchars($row['stok']) ?></td>
+                            <th>ID</th>
+                            <th>Nama Barang</th>
+                            <th>Stok</th>
+                            <th>Aksi</th>
                         </tr>
-                    <?php endwhile; ?>
-                </tbody>
-            </table>
-        </section>
-
-        <!-- Permintaan Barang -->
-                <section id="requests">
-                    <h2>Permintaan Barang</h2>
-                    <!-- Tombol Unduh Data Permintaan -->
-                    <form action="config/excel.php" method="POST" style="margin-bottom: 20px;">
-                        <button type="submit" style="padding: 10px 20px; background-color: #4CAF50; color: white; border: none; border-radius: 5px;">
-                            Unduh Semua Data dalam Excel
-                        </button>
-                    </form>
-                    <table border="1">
-                        <thead>
+                    </thead>
+                    <tbody>
+                        <?php while ($row = $result_barang->fetch_assoc()): ?>
                             <tr>
-                                <th>Nama</th>
-                                <th>ID Pemohon</th>
-                                <th>Departemen</th>
-                                <th>Barang</th>
-                                <th>Tanggal</th>
-                                <th>Status</th>
-                                <th>Catatan</th>
-                                <th>Aksi</th>
+                                <td><?= htmlspecialchars($row['id']) ?></td>
+                                <td><?= htmlspecialchars($row['nama_barang']) ?></td>
+                                <td><?= htmlspecialchars($row['stok']) ?></td>
+                                <td>
+                                    <form action="" method="POST" style="display: inline;">
+                                        <input type="hidden" name="delete_id" value="<?= htmlspecialchars($row['id']) ?>">
+                                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Yakin ingin menghapus barang ini?')">Hapus</button>
+                                    </form>
+                                </td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            <?php while ($row = $result_permintaan->fetch_assoc()): ?>
-                                <tr>
-                                    <td><?= htmlspecialchars($row['nama']) ?></td>
-                                    <td><?= htmlspecialchars($row['id_pemohon']) ?></td>
-                                    <td><?= htmlspecialchars($row['departemen']) ?></td>
-                                    <td><?= htmlspecialchars($row['barang']) ?></td>
-                                    <td><?= htmlspecialchars($row['tanggal']) ?></td>
-                                    <td><?= htmlspecialchars($row['status']) ?></td>
-                                    <td><?= htmlspecialchars($row['catatan_admin']) ?></td>
-                                    <td>
-                                        <form action="config/update.php" method="POST" style="display:inline;">
-                                            <input type="hidden" name="id" value="<?= htmlspecialchars($row['id']) ?>">
-                                            <select name="status">
-                                                <option value="Pending" <?= $row['status'] == 'Pending' ? 'selected' : '' ?>>Pending</option>
-                                                <option value="Disetujui" <?= $row['status'] == 'Disetujui' ? 'selected' : '' ?>>Disetujui</option>
-                                                <option value="Ditolak" <?= $row['status'] == 'Ditolak' ? 'selected' : '' ?>>Ditolak</option>
-                                            </select>
-                                            <input type="text" name="catatan_admin" placeholder="Catatan Admin" value="<?= htmlspecialchars($row['catatan_admin']) ?>">
-                                            <button type="submit">Perbarui</button>
-                                        </form>
-                                    </td>
-                                </tr>
-                            <?php endwhile; ?>
-                        </tbody>
-                    </table>
-                </section>
-
+                        <?php endwhile; ?>
+                    </tbody>
+                </table>
+            </div>
+        </section>
     </div>
 </body>
 </html>

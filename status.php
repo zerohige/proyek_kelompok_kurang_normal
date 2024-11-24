@@ -2,7 +2,7 @@
 include 'config/database.php';
 
 // Ambil ID permintaan dari URL
-$id_permintaan = isset($_GET['id']) ? intval($_GET['id']) : 0; // Pastikan ID selalu integer
+$id_permintaan = isset($_GET['id']) ? intval($_GET['id']) : 0;
 
 // Periksa apakah ID permintaan valid
 if ($id_permintaan > 0) {
@@ -27,26 +27,67 @@ if ($id_permintaan > 0) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Status Permintaan</title>
-    <link rel="stylesheet" href="assets/css/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .letter-container {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            margin: 50px auto;
+            max-width: 800px;
+        }
+        .letter-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .letter-footer {
+            text-align: center;
+            margin-top: 30px;
+        }
+        .btn-custom {
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        .btn-custom:hover {
+            opacity: 0.9;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
-        <h1>Status Permintaan Barang</h1>
-        <p><strong>Nama:</strong> <?= htmlspecialchars($row['nama']) ?></p>
-        <p><strong>ID Pemohon:</strong> <?= htmlspecialchars($row['id_pemohon']) ?></p>
-        <p><strong>Departemen:</strong> <?= htmlspecialchars($row['departemen']) ?></p>
-        <p><strong>Barang Diminta:</strong> <?= htmlspecialchars($row['barang']) ?></p>
-        <p><strong>Status:</strong> <?= htmlspecialchars($row['status']) ?></p>
-        <p><strong>Catatan Admin:</strong> <?= htmlspecialchars($row['catatan_admin'] ?? 'Belum ada catatan') ?></p>
-        
-        <!-- Tombol untuk kembali ke halaman home -->
-        <a href="index.php" style="display: inline-block; margin-top: 20px; padding: 10px 20px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 5px;">Kembali ke Home</a>
-        
-        <!-- Tombol untuk mengunduh PDF -->
-        <form action="config/pdf.php" method="POST" style="display: inline-block;">
-            <input type="hidden" name="id" value="<?= $id_permintaan ?>">
-            <button type="submit" style="margin-top: 20px; padding: 10px 20px; background-color: #2196F3; color: white; border: none; border-radius: 5px;">Unduh Status PDF</button>
-        </form>
+        <div class="letter-container">
+            <div class="letter-header">
+                <h1>Status Permintaan Barang</h1>
+                <p class="text-muted">Nomor Permintaan: <strong>#<?= htmlspecialchars($id_permintaan) ?></strong></p>
+            </div>
+            <div class="letter-body">
+                <p><strong>Nama Pemohon:</strong> <?= htmlspecialchars($row['nama']) ?></p>
+                <p><strong>ID Pemohon:</strong> <?= htmlspecialchars($row['id_pemohon']) ?></p>
+                <p><strong>Departemen:</strong> <?= htmlspecialchars($row['departemen']) ?></p>
+                <p><strong>Barang Diminta:</strong> <?= htmlspecialchars($row['barang']) ?></p>
+                <p><strong>Tanggal Permintaan:</strong> <?= htmlspecialchars($row['tanggal']) ?></p>
+                <p><strong>Status:</strong> 
+                    <span class="badge bg-<?= strtolower($row['status']) === 'disetujui' ? 'success' : (strtolower($row['status']) === 'ditolak' ? 'danger' : 'warning') ?>">
+                        <?= htmlspecialchars($row['status']) ?>
+                    </span>
+                </p>
+                <p><strong>Catatan Admin:</strong> <?= htmlspecialchars($row['catatan_admin'] ?? 'Belum ada catatan') ?></p>
+            </div>
+            <div class="letter-footer">
+                <a href="index.php" class="btn btn-success btn-custom">Kembali ke Home</a>
+                <form action="config/pdf.php" method="POST" class="d-inline">
+                    <input type="hidden" name="id" value="<?= $id_permintaan ?>">
+                    <button type="submit" class="btn btn-primary btn-custom">Unduh Status PDF</button>
+                </form>
+            </div>
+        </div>
     </div>
 </body>
 </html>
