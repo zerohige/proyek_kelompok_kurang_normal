@@ -54,6 +54,12 @@ if ($id_permintaan > 0) {
         $pdf->Cell(50, 10, 'Barang Diminta:', 0, 0);
         $pdf->Cell(0, 10, htmlspecialchars($row['barang']), 0, 1);
 
+        $pdf->Cell(50, 10, 'Jumlah:', 0, 0);
+        $pdf->Cell(0, 10, htmlspecialchars($row['jumlah']), 0, 1);
+
+        $pdf->Cell(50, 10, 'Satuan:', 0, 0);
+        $pdf->Cell(0, 10, htmlspecialchars($row['satuan']), 0, 1);
+
         $pdf->Cell(50, 10, 'Status:', 0, 0);
         $status_color = strtolower($row['status']) === 'disetujui' ? 'Hijau' : (strtolower($row['status']) === 'ditolak' ? 'Merah' : 'Kuning');
         $pdf->Cell(0, 10, htmlspecialchars($row['status']) . " (Indikator: $status_color)", 0, 1);

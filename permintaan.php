@@ -14,11 +14,54 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_id'])) {
     $status = $conn->real_escape_string($_POST['status']);
     $catatan_admin = $conn->real_escape_string(trim($_POST['catatan_admin']));
 
-    $update_query = "UPDATE permintaan_barang SET status = '$status', catatan_admin = '$catatan_admin' WHERE id = $update_id";
-    if ($conn->query($update_query)) {
-        echo "<script>alert('Permintaan berhasil diperbarui!'); window.location.href = 'permintaan.php';</script>";
+    // Ambil data barang yang diminta
+    $query = "SELECT barang, jumlah FROM permintaan_barang WHERE id = $update_id";
+    $result = $conn->query($query);
+    if ($result && $row = $result->fetch_assoc()) {
+        $barang = $row['barang'];
+        $jumlah = $row['jumlah'];
+        
+        // Cek apakah status permintaan menjadi Disetujui
+        if ($status === 'Disetujui') {
+            // Ambil stok barang yang tersedia
+            $stok_query = "SELECT stok FROM barang WHERE nama_barang = '$barang'";
+            $stok_result = $conn->query($stok_query);
+            if ($stok_result && $stok_row = $stok_result->fetch_assoc()) {
+                $stok_tersedia = $stok_row['stok'];
+
+                // Pastikan stok cukup
+                if ($stok_tersedia >= $jumlah) {
+                    // Update stok barang
+                    $new_stok = $stok_tersedia - $jumlah;
+                    $update_stok_query = "UPDATE barang SET stok = $new_stok WHERE nama_barang = '$barang'";
+                    if ($conn->query($update_stok_query)) {
+                        // Update status permintaan dan catatan admin
+                        $update_query = "UPDATE permintaan_barang SET status = '$status', catatan_admin = '$catatan_admin' WHERE id = $update_id";
+                        if ($conn->query($update_query)) {
+                            echo "<script>alert('Permintaan berhasil diperbarui dan stok berhasil diperbarui!'); window.location.href = 'permintaan.php';</script>";
+                        } else {
+                            echo "<script>alert('Gagal memperbarui permintaan: " . $conn->error . "'); window.history.back();</script>";
+                        }
+                    } else {
+                        echo "<script>alert('Gagal memperbarui stok barang: " . $conn->error . "'); window.history.back();</script>";
+                    }
+                } else {
+                    echo "<script>alert('Stok barang tidak mencukupi untuk memenuhi permintaan.'); window.history.back();</script>";
+                }
+            } else {
+                echo "<script>alert('Barang tidak ditemukan.'); window.history.back();</script>";
+            }
+        } else {
+            // Jika status bukan Disetujui, hanya update status dan catatan admin
+            $update_query = "UPDATE permintaan_barang SET status = '$status', catatan_admin = '$catatan_admin' WHERE id = $update_id";
+            if ($conn->query($update_query)) {
+                echo "<script>alert('Permintaan berhasil diperbarui!'); window.location.href = 'permintaan.php';</script>";
+            } else {
+                echo "<script>alert('Gagal memperbarui permintaan: " . $conn->error . "'); window.history.back();</script>";
+            }
+        }
     } else {
-        echo "<script>alert('Gagal memperbarui permintaan: " . $conn->error . "'); window.history.back();</script>";
+        echo "<script>alert('Data permintaan tidak ditemukan.'); window.history.back();</script>";
     }
 }
 
@@ -83,6 +126,8 @@ if (!$result_permintaan) {
                         <th>ID</th>
                         <th>Departemen</th>
                         <th>Barang</th>
+                        <th>Jumlah</th>
+                        <th>Satuan</th>
                         <th>Tanggal</th>
                         <th>Status</th>
                         <th>Catatan</th>
@@ -96,6 +141,8 @@ if (!$result_permintaan) {
                             <td><?= htmlspecialchars($row['id_pemohon']) ?></td>
                             <td><?= htmlspecialchars($row['departemen']) ?></td>
                             <td><?= htmlspecialchars($row['barang']) ?></td>
+                            <td><?= htmlspecialchars($row['jumlah']) ?></td>
+                            <td><?= htmlspecialchars($row['satuan']) ?></td>
                             <td><?= htmlspecialchars($row['tanggal']) ?></td>
                             <td>
                                 <span class="badge bg-<?= strtolower($row['status']) === 'disetujui' ? 'success' : (strtolower($row['status']) === 'ditolak' ? 'danger' : 'warning') ?>">

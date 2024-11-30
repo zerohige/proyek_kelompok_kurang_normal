@@ -14,11 +14,11 @@ if ($id_permintaan > 0) {
         $row = $result->fetch_assoc();
     } else {
         // Jika data tidak ditemukan, tampilkan pesan error
-        die("<script>alert('Permintaan tidak ditemukan.'); window.location.href = 'index.php';</script>");
+        die("<script>alert('Permintaan tidak ditemukan.'); window.location.href = 'formulir.php';</script>");
     }
 } else {
     // Jika ID tidak valid, kembalikan ke halaman index
-    die("<script>alert('ID permintaan tidak valid.'); window.location.href = 'index.php';</script>");
+    die("<script>alert('ID permintaan tidak valid.'); window.location.href = 'formulir.php';</script>");
 }
 ?>
 <!DOCTYPE html>
@@ -81,6 +81,8 @@ if ($id_permintaan > 0) {
                 <p><strong>ID Pemohon:</strong> <?= htmlspecialchars($row['id_pemohon']) ?></p>
                 <p><strong>Departemen:</strong> <?= htmlspecialchars($row['departemen']) ?></p>
                 <p><strong>Barang Diminta:</strong> <?= htmlspecialchars($row['barang']) ?></p>
+                <p><strong>Jumlah:</strong> <?= htmlspecialchars($row['jumlah']) ?></p>
+                <p><strong>satuan:</strong> <?= htmlspecialchars($row['satuan']) ?></p>
                 <p><strong>Tanggal Permintaan:</strong> <?= htmlspecialchars($row['tanggal']) ?></p>
                 <p><strong>Status:</strong> 
                     <span class="badge bg-<?= strtolower($row['status']) === 'disetujui' ? 'success' : (strtolower($row['status']) === 'ditolak' ? 'danger' : 'warning') ?>">
@@ -90,7 +92,7 @@ if ($id_permintaan > 0) {
                 <p><strong>Catatan Admin:</strong> <?= htmlspecialchars($row['catatan_admin'] ?? 'Belum ada catatan') ?></p>
             </div>
             <div class="letter-footer">
-                <a href="index.php" class="btn btn-success btn-custom">Kembali ke Home</a>
+                <a href="formulir.php" class="btn btn-success btn-custom">Kembali ke Home</a>
                 <form action="config/pdf.php" method="POST" class="d-inline">
                     <input type="hidden" name="id" value="<?= $id_permintaan ?>">
                     <button type="submit" class="btn btn-primary btn-custom">Unduh Status PDF</button>

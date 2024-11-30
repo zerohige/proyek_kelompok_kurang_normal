@@ -1,165 +1,73 @@
-<?php
-// Sertakan koneksi database
-include 'config/database.php';
-date_default_timezone_set('Asia/Jakarta');
-?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jurnal Pengambilan ATK</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
+    <title>Halaman Login</title>
     <style>
-        #signature-pad canvas {
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            background: #fff;
+        body {
+            font-family: Arial, sans-serif;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            background-color: #002741;
         }
-        .login-button {
-            display: inline-block;
-            background-color: #007bff;
-            color: white;
-            padding: 10px 20px;
+
+        .container {
+            text-align: center;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        button {
+            padding: 15px 30px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 10px;
             border: none;
             border-radius: 5px;
-            text-decoration: none;
-            font-weight: bold;
-            margin-bottom: 20px;
-            text-align: center;
-            transition: all 0.3s ease;
+            transition: background-color 0.3s ease;
         }
-        .login-button:hover {
-            background-color: #0056b3;
+
+        .admin-btn {
+            background-color: #007bff;
             color: white;
         }
-        .container {
-            max-width: 800px;
+
+        .admin-btn:hover {
+            background-color: #0056b3;
+        }
+
+        .user-btn {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .user-btn:hover {
+            background-color: #218838;
         }
     </style>
 </head>
 <body>
-    <div class="header-container">
-        <div class="d-flex align-items-center">
-            <!-- Logo Kampus -->
-            <img src="assets/gambar/fttk1.png" alt="Logo Kampus" style="max-width: 200px; height: auto;">
-            <!-- Nama Kampus -->
-            <div class="campus-name">
-        </div>
-    </div>
 
-    <div class="container mt-5">
-        <h1 class="text-center mb-4">Formulir Permintaan Barang</h1>
-        <h2 class="text-center mb-4">Fakultas Teknik dan Teknologi Kemaritiman</h2>
-        <div class="d-flex justify-content-end">
-            <a href="login.php" class="login-button">Login sebagai Admin</a>
-            <link rel="stylesheet" href="assets/css/style.css">
-        </div>
-        <form action="config/request.php" method="POST" class="needs-validation" novalidate>
-            <!-- Informasi Pemohon -->
-            <div class="mb-3">
-                <label for="nama" class="form-label">Nama:</label>
-                <input type="text" id="nama" name="nama" class="form-control" required>
-                <div class="invalid-feedback">Nama wajib diisi.</div>
-            </div>
-            <div class="mb-3">
-                <label for="id" class="form-label">ID:</label>
-                <input type="text" id="id" name="id" class="form-control" required>
-                <div class="invalid-feedback">ID wajib diisi.</div>
-            </div>
-            <div class="mb-3">
-                <label for="departemen" class="form-label">Departemen:</label>
-                <select id="departemen" name="departemen" class="form-select" required>
-                    <option value="">-- Pilih Departemen --</option>
-                    <option value="Mahasiswa">Mahasiswa</option>
-                    <option value="Dosen">Dosen</option>
-                    <option value="Tenaga Pengajar">Tenaga Pengajar</option>
-                    <option value="Staff TU">Staff TU</option>
-                </select>
-                <div class="invalid-feedback">Pilih departemen yang sesuai.</div>
-            </div>
-            <div class="mb-3">
-                <label for="telepon" class="form-label">Nomor Telepon:</label>
-                <input type="text" id="telepon" name="telepon" class="form-control" required>
-                <div class="invalid-feedback">Nomor telepon wajib diisi.</div>
-            </div>
-            <div class="mb-3">
-                <label for="tanggal" class="form-label">Tanggal:</label>
-                <input type="text" id="tanggal" name="tanggal" class="form-control" value="<?= date('Y-m-d H:i') ?>" readonly>
-            </div>
-            <!-- Barang dan Stok -->
-            <div class="mb-3">
-                <label for="barang" class="form-label">Barang yang Diminta:</label>
-                <select id="barang" name="barang" class="form-select" required>
-                    <option value="">-- Pilih Barang --</option>
-                    <?php
-                    // Query untuk mengambil data barang dari database
-                    $query = "SELECT * FROM barang";
-                    $result = $conn->query($query);
-                    if ($result) {
-                        while ($row = $result->fetch_assoc()) {
-                            $stok = $row['stok'] > 0 ? "Stok: {$row['stok']}" : "Stok Habis";
-                            echo "<option value='{$row['nama_barang']}'>{$row['nama_barang']} ($stok)</option>";
-                        }
-                    } else {
-                        echo "<option value=''>Barang tidak tersedia</option>";
-                    }
-                    ?>
-                </select>
-                <div class="invalid-feedback">Pilih barang yang diminta.</div>
-            </div>
-            <!-- Tanda Tangan Digital -->
-            <div class="mb-3">
-                <label for="signature" class="form-label">Tanda Tangan:</label>
-                <div id="signature-pad">
-                    <canvas id="signature-canvas" width="500" height="200"></canvas>
-                </div>
-                <button type="button" class="btn btn-secondary mt-2" id="clear-signature">Hapus Tanda Tangan</button>
-                <input type="hidden" id="signature-data" name="signature">
-            </div>
-            <!-- Submit -->
-            <div class="text-center">
-                <button type="submit" class="btn btn-primary">Kirim Permintaan</button>
-            </div>
-        </form>
-    </div>
-    <script>
-        // Inisialisasi Signature Pad
-        const canvas = document.getElementById('signature-canvas');
-        const signaturePad = new SignaturePad(canvas);
-        const clearButton = document.getElementById('clear-signature');
-        const signatureData = document.getElementById('signature-data');
+<div class="container">
+    <h1>Selamat Datang</h1>
+    <p>Pilih untuk login sebagai:</p>
+    <a href="login.php">
+        <button class="admin-btn">Saya Adalah Admin</button>
+    </a>
+    <a href="formulir.php">
+        <button class="user-btn">Saya Adalah Pengguna</button>
+    </a>
+</div>
 
-        // Hapus tanda tangan
-        clearButton.addEventListener('click', () => {
-            signaturePad.clear();
-        });
-
-        // Simpan data tanda tangan
-        document.querySelector('form').addEventListener('submit', (e) => {
-            if (!signaturePad.isEmpty()) {
-                signatureData.value = signaturePad.toDataURL();
-            } else {
-                e.preventDefault();
-                alert('Tanda tangan diperlukan!');
-            }
-        });
-
-        // Bootstrap Validation
-        (() => {
-            const forms = document.querySelectorAll('.needs-validation');
-            Array.from(forms).forEach(form => {
-                form.addEventListener('submit', event => {
-                    if (!form.checkValidity()) {
-                        event.preventDefault();
-                        event.stopPropagation();
-                    }
-                    form.classList.add('was-validated');
-                }, false);
-            });
-        })();
-    </script>
 </body>
 </html>
