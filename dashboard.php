@@ -60,26 +60,133 @@ if (!$result_barang) {
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Admin</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+        body {
+            background-color: #f4f6f9;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .header-container {
+            background-color: #00274d;
+            padding: 20px 0;
+            color: white;
+            display: flex;
+            justify-content: flex-start; /* Pindahkan ke kiri */
+            align-items: center;
+        }
+
+        .header-container img {
+            max-width: 200px;
+            height: auto;
+        }
+
+        .header-container .campus-name {
+            font-size: 1.5rem;
+            margin-left: 20px;
+            font-weight: bold;
+        }
+
+
+        .container {
+            margin-top: 50px;
+        }
+
+        h1 {
+            color: #333;
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+        }
+
+        .nav-link {
+            font-weight: bold;
+        }
+
+        .nav-pills .nav-link.active {
+            background-color: #007bff;
+        }
+
+        .form-label {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .table th, .table td {
+            text-align: center;
+        }
+
+        .table-hover tbody tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .table-responsive {
+            margin-top: 30px;
+        }
+
+        .btn-danger {
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-danger:hover {
+            background-color: #d9534f;
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 0.9rem;
+        }
+
+        /* Animasi pada form tambah barang */
+        .form-container {
+            animation: slideIn 1s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Responsif untuk tampilan mobile */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 15px;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .table th, .table td {
+                font-size: 0.85rem;
+            }
+
+            .nav-pills .nav-link {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
 </head>
 <body>
+
 <div class="header-container">
-    <div class="d-flex align-items-center">
-        <!-- Logo Kampus -->
-        <img src="assets/gambar/fttk1.png" alt="Logo Kampus" style="max-width: 200px; height: auto;">
-        <!-- Nama Kampus -->
-        <div class="campus-name">
-    </div>
+    <img src="assets/gambar/fttk1.png" alt="Logo Kampus">
+    <div class="campus-name">Fakultas Teknik dan Teknologi Kemaritiman</div>
 </div>
 
-<div class="container mt-5">
-    <h1 class="text-center mb-4">Halo Admin!!!</h1>
+<div class="container">
+    <h1 class="text-center">Halo Admin</h1>
     <nav class="mb-4">
         <ul class="nav nav-pills justify-content-center">
             <li class="nav-item">
@@ -87,13 +194,12 @@ if (!$result_barang) {
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="permintaan.php">Permintaan Barang</a>
-                <link rel="stylesheet" href="assets/css/style.css">
             </li>
         </ul>
     </nav>
 
     <!-- Manajemen Barang -->
-    <section id="manage-items" class="mb-5">
+    <section id="manage-items" class="form-container">
         <h2 class="text-center mb-4">Manajemen Barang</h2>
         <form action="" method="POST" class="row g-3">
             <div class="col-md-6">
@@ -108,11 +214,11 @@ if (!$result_barang) {
                 <label for="satuan" class="form-label">Satuan:</label>
                 <select id="satuan" name="satuan" class="form-select" required>
                     <option value="pcs">Pcs</option>
-                    <option value="pacuk">Pack</option>
+                    <option value="pack">Pack</option>
                 </select>
             </div>
             <div class="col-12 text-center">
-                <button type="submit" class="btn btn-success">Tambah Barang</button>
+                <button type="submit" class="btn btn-primary">Tambah Barang</button>
             </div>
         </form>
 
@@ -147,5 +253,6 @@ if (!$result_barang) {
         </div>
     </section>
 </div>
+
 </body>
 </html>

@@ -31,43 +31,114 @@ if ($id_permintaan > 0) {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <style>
         body {
-            background-color: #f8f9fa;
+            background-color: #00274d;
+            font-family: 'Arial', sans-serif;
         }
+
+        .header-container {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .header-container img {
+            max-width: 150px;
+            height: auto;
+        }
+
         .letter-container {
-            background: white;
-            border-radius: 10px;
-            padding: 30px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            margin: 50px auto;
-            max-width: 800px;
+            background: #ffffff;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            margin: 30px auto;
+            max-width: 900px;
+            transition: all 0.3s ease;
         }
-        .letter-header {
-            text-align: center;
-            margin-bottom: 30px;
+
+        .letter-container:hover {
+            transform: translateY(-5px);
         }
+
+        .letter-header h1 {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .letter-header p {
+            font-size: 1rem;
+            color: #888;
+        }
+
+        .letter-body p {
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+        }
+
         .letter-footer {
             text-align: center;
-            margin-top: 30px;
+            margin-top: 20px;
         }
+
         .btn-custom {
-            padding: 10px 20px;
-            border-radius: 5px;
+            padding: 12px 25px;
+            border-radius: 25px;
             font-weight: bold;
             transition: all 0.3s ease;
         }
+
         .btn-custom:hover {
-            opacity: 0.9;
+            opacity: 0.85;
+            transform: scale(1.05);
+        }
+
+        .badge {
+            font-size: 1.1rem;
+            font-weight: bold;
+            padding: 8px 15px;
+            border-radius: 25px;
+        }
+
+        .badge.bg-success {
+            background-color: #28a745;
+        }
+
+        .badge.bg-danger {
+            background-color: #dc3545;
+        }
+
+        .badge.bg-warning {
+            background-color: #ffc107;
+        }
+
+        @media (max-width: 768px) {
+            .letter-container {
+                padding: 20px;
+                margin: 10px;
+            }
+
+            .letter-header h1 {
+                font-size: 1.5rem;
+            }
+
+            .letter-body p {
+                font-size: 1rem;
+            }
+
+            .btn-custom {
+                padding: 10px 20px;
+            }
         }
     </style>
+
 </head>
 <body>
-<link rel="stylesheet" href="assets/css/style.css">
-<div class="header-container">
+    <div class="header-container">
         <div class="d-flex align-items-center">
             <!-- Logo Kampus -->
-            <img src="assets/gambar/fttk1.png" alt="Logo Kampus" style="max-width: 200px; height: auto;">
-            <!-- Nama Kampus -->
-            <div class="campus-name">
+            <img src="assets/gambar/fttk1.png" alt="Logo Kampus" style="max-width: 150px; height: auto;">
         </div>
     </div>
     <div class="container">
@@ -82,7 +153,7 @@ if ($id_permintaan > 0) {
                 <p><strong>Departemen:</strong> <?= htmlspecialchars($row['departemen']) ?></p>
                 <p><strong>Barang Diminta:</strong> <?= htmlspecialchars($row['barang']) ?></p>
                 <p><strong>Jumlah:</strong> <?= htmlspecialchars($row['jumlah']) ?></p>
-                <p><strong>satuan:</strong> <?= htmlspecialchars($row['satuan']) ?></p>
+                <p><strong>Satuan:</strong> <?= htmlspecialchars($row['satuan']) ?></p>
                 <p><strong>Tanggal Permintaan:</strong> <?= date('Y-m-d', strtotime($row['tanggal'])) ?></p>
                 <p><strong>Status:</strong> 
                     <span class="badge bg-<?= strtolower($row['status']) === 'disetujui' ? 'success' : (strtolower($row['status']) === 'ditolak' ? 'danger' : 'warning') ?>">

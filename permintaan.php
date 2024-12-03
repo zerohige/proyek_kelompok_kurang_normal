@@ -85,7 +85,7 @@ if (!$result_permintaan) {
 }
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -98,32 +98,102 @@ if (!$result_permintaan) {
             return confirm('Apakah Anda yakin ingin menghapus permintaan ini? Permintaan ini tidak dapat dipulihkan.');
         }
     </script>
+    <style>
+        /* Gaya untuk header */
+        .header-container {
+            background-color: #00274d;
+            color: white;
+            padding: 20px;
+        }
+
+        .header-container img {
+            max-width: 150px;
+            height: auto;
+        }
+
+        .header-container .campus-name {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        /* Gaya untuk tabel dan tombol */
+        .table th, .table td {
+            text-align: center;
+        }
+
+        .table-hover tbody tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .btn-danger, .btn-primary {
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-danger:hover {
+            background-color: #dc3545;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+
+        .table-responsive {
+            margin-top: 30px;
+        }
+
+        /* Animasi pada tombol dan form */
+        .btn, .form-control, .form-select {
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover, .form-control:hover, .form-select:hover {
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        /* Responsif untuk tampilan mobile */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 15px;
+            }
+            h1 {
+                font-size: 1.8rem;
+            }
+            .table th, .table td {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="header-container">
-        <div class="d-flex align-items-center">
-            <!-- Logo Kampus -->
-            <img src="assets/gambar/fttk1.png" alt="Logo Kampus" style="max-width: 200px; height: auto;">
-            <!-- Nama Kampus -->
-            <div class="campus-name">
+    <div class="d-flex justify-content-start align-items-center">
+            <img src="assets/gambar/fttk1.png" alt="Logo Kampus">
+            <div class="campus-name">Fakultas Teknik dan Teknologi Kemaritiman</div>
         </div>
     </div>
-    <div class="container mt-5">
+
+        <div class="container mt-5">
         <h1 class="text-center mb-4">Permintaan Barang</h1>
+
         <nav class="mb-4">
             <ul class="nav nav-pills justify-content-center">
                 <li class="nav-item">
-                    <a class="nav-link" href="dashboard.php">Dashboard</a>
-                    <link rel="stylesheet" href="assets/css/style.css">
+                    <a class="nav-link" href="dashboard.php">Manajemen Barang</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="#">Permintaan Barang</a>
                 </li>
             </ul>
         </nav>
+        </div>
 
         <!-- Tombol Unduh PDF -->
         <form action="config/permintaanpdf.php" method="POST" class="mb-4 text-center">
             <button type="submit" class="btn btn-primary">Unduh Semua Permintaan sebagai PDF</button>
         </form>
 
+        <!-- Tabel Permintaan Barang -->
         <div class="table-responsive">
             <table class="table table-bordered table-hover">
                 <thead class="table-dark">
@@ -172,7 +242,6 @@ if (!$result_permintaan) {
                                     </div>
                                     <button type="submit" class="btn btn-primary btn-sm">Perbarui</button>
                                 </form>
-                                <!-- Form untuk menghapus permintaan -->
                                 <!-- Form untuk menghapus permintaan -->
                                 <form action="" method="POST" onsubmit="return confirmDelete();">
                                     <input type="hidden" name="delete_id" value="<?= htmlspecialchars($row['id']) ?>">
