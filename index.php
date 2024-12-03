@@ -59,13 +59,15 @@
 <body>
 
 <div class="container">
-    <h1>Selamat Datang</h1>
-    <p>Pilih untuk login sebagai:</p>
+    <h2>Selamat Datang Di Formulir</h2>
+    <h2>Permintaan Barang Habis Pakai(ATK)</h2>
+    <h1>Fakultas Teknik dan Teknologi Kemaritiman</h1>
+    <p>Kamu disini sebagai :</p>
     <a href="login.php">
-        <button class="admin-btn">Saya Adalah Admin</button>
+        <button class="admin-btn">Admin</button>
     </a>
     <a href="formulir.php">
-        <button class="user-btn">Saya Adalah Pengguna</button>
+        <button class="user-btn">Pengguna</button>
     </a>
 </div>
 

@@ -83,7 +83,7 @@ if ($id_permintaan > 0) {
                 <p><strong>Barang Diminta:</strong> <?= htmlspecialchars($row['barang']) ?></p>
                 <p><strong>Jumlah:</strong> <?= htmlspecialchars($row['jumlah']) ?></p>
                 <p><strong>satuan:</strong> <?= htmlspecialchars($row['satuan']) ?></p>
-                <p><strong>Tanggal Permintaan:</strong> <?= htmlspecialchars($row['tanggal']) ?></p>
+                <p><strong>Tanggal Permintaan:</strong> <?= date('Y-m-d', strtotime($row['tanggal'])) ?></p>
                 <p><strong>Status:</strong> 
                     <span class="badge bg-<?= strtolower($row['status']) === 'disetujui' ? 'success' : (strtolower($row['status']) === 'ditolak' ? 'danger' : 'warning') ?>">
                         <?= htmlspecialchars($row['status']) ?>

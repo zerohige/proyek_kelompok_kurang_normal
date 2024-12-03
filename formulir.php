@@ -86,7 +86,7 @@ date_default_timezone_set('Asia/Jakarta');
             </div>
             <div class="mb-3">
                 <label for="tanggal" class="form-label">Tanggal:</label>
-                <input type="text" id="tanggal" name="tanggal" class="form-control" value="<?= date('Y-m-d H:i') ?>" readonly>
+                <input type="text" id="tanggal" name="tanggal" class="form-control" value="<?= date('Y-m-d') ?>" readonly>
             </div>
             <!-- Barang dan Stok -->
             <div class="mb-3">

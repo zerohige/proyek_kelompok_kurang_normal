@@ -92,6 +92,12 @@ if (!$result_permintaan) {
     <title>Permintaan Barang</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Fungsi untuk konfirmasi penghapusan
+        function confirmDelete() {
+            return confirm('Apakah Anda yakin ingin menghapus permintaan ini? Permintaan ini tidak dapat dipulihkan.');
+        }
+    </script>
 </head>
 <body>
     <div class="header-container">
@@ -143,7 +149,7 @@ if (!$result_permintaan) {
                             <td><?= htmlspecialchars($row['barang']) ?></td>
                             <td><?= htmlspecialchars($row['jumlah']) ?></td>
                             <td><?= htmlspecialchars($row['satuan']) ?></td>
-                            <td><?= htmlspecialchars($row['tanggal']) ?></td>
+                            <td><?= date('Y-m-d', strtotime($row['tanggal'])) ?></td>
                             <td>
                                 <span class="badge bg-<?= strtolower($row['status']) === 'disetujui' ? 'success' : (strtolower($row['status']) === 'ditolak' ? 'danger' : 'warning') ?>">
                                     <?= htmlspecialchars($row['status']) ?>
@@ -167,9 +173,10 @@ if (!$result_permintaan) {
                                     <button type="submit" class="btn btn-primary btn-sm">Perbarui</button>
                                 </form>
                                 <!-- Form untuk menghapus permintaan -->
-                                <form action="" method="POST">
+                                <!-- Form untuk menghapus permintaan -->
+                                <form action="" method="POST" onsubmit="return confirmDelete();">
                                     <input type="hidden" name="delete_id" value="<?= htmlspecialchars($row['id']) ?>">
-                                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Yakin ingin menghapus permintaan ini?')">Hapus</button>
+                                    <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
                                 </form>
                             </td>
                         </tr>
