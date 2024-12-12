@@ -17,22 +17,24 @@ date_default_timezone_set('Asia/Jakarta');
             background-color: #00274d;
             font-family: 'Arial', sans-serif;
         }
-        
-        .header-container {
+
+         .header-container {
             background-color: #00274d;
+            padding: 20px 0;
             color: white;
-            padding: 20px;
-            margin-bottom: 30px;
+            display: flex;
+            justify-content: flex-start; /* Pindahkan ke kiri */
+            align-items: center;
         }
 
         .header-container img {
-            max-width: 150px;
+            max-width: 200px;
             height: auto;
-            margin-right: 20px;
         }
 
-        .campus-name {
-            font-size: 1.75rem;
+        .header-container .campus-name {
+            font-size: 1.5rem;
+            margin-left: 20px;
             font-weight: bold;
         }
 
@@ -115,13 +117,11 @@ date_default_timezone_set('Asia/Jakarta');
     </style>
 </head>
 <body>
-
     <!-- Header -->
-    <div class="header-container d-flex align-items-center">
-        <img src="assets/gambar/fttk1.png" alt="Logo Kampus">
-        <div class="campus-name">Fakultas Teknik dan Teknologi Kemaritiman</div>
+    <div class="header-container">
+         <img src="assets/gambar/fttk1.png" alt="Logo Kampus">
+         <div class="campus-name">Fakultas Teknik dan Teknologi Kemaritiman</div>
     </div>
-
     <!-- Formulir Permintaan Barang -->
     <div class="container">
         <div class="card">
@@ -135,16 +135,14 @@ date_default_timezone_set('Asia/Jakarta');
                 </div>
 
                 <div class="mb-3">
-                    <label for="id" class="form-label">ID:</label>
-                    <input type="text" id="id" name="id" class="form-control" required>
-                    <div class="invalid-feedback">ID wajib diisi.</div>
-                </div>
-
-                <div class="mb-3">
                     <label for="departemen" class="form-label">Departemen:</label>
                     <select id="departemen" name="departemen" class="form-select" required>
                         <option value="">-- Pilih Departemen --</option>
-                        <option value="Mahasiswa">Mahasiswa</option>
+                        <option value="Mahasiswa">Mahasiswa TI</option>
+                        <option value="Mahasiswa">Mahasiswa TE</option>
+                        <option value="Mahasiswa">Mahasiswa TP</option>
+                        <option value="Mahasiswa">Mahasiswa---</option>
+                        <option value="Mahasiswa">Mahasiswa---</option>
                         <option value="Dosen">Dosen</option>
                         <option value="Tenaga Pengajar">Tenaga Pengajar</option>
                         <option value="Staff TU">Staff TU</option>
@@ -167,7 +165,6 @@ date_default_timezone_set('Asia/Jakarta');
                 <div class="mb-3">
                     <label for="barang" class="form-label">Barang yang Diminta:</label>
                     <div class="d-flex align-items-center">
-                        <!-- Dropdown untuk memilih barang -->
                         <select id="barang" name="barang" class="form-select me-2" required>
                             <option value="">-- Pilih Barang --</option>
                             <?php
@@ -176,44 +173,56 @@ date_default_timezone_set('Asia/Jakarta');
                             if ($result) {
                                 while ($row = $result->fetch_assoc()) {
                                     $stok = $row['stok'] > 0 ? "Stok: {$row['stok']}" : "Stok Habis";
-                                    echo "<option value='{$row['nama_barang']}' data-id='{$row['id']}' data-stok='{$row['stok']}'>{$row['nama_barang']} ($stok)</option>";
+                                    echo "<option value='{$row['nama_barang']}' data-stok='{$row['stok']}'>{$row['nama_barang']} ($stok)</option>";
                                 }
                             } else {
                                 echo "<option value=''>Barang tidak tersedia</option>";
                             }
                             ?>
                         </select>
-
-                        <!-- Dropdown untuk memilih satuan -->
-                        <select id="satuan" name="satuan" class="form-select" required>
-                            <option value="">-- Pilih Satuan --</option>
-                        </select>
                     </div>
-                    <div class="invalid-feedback">Pilih barang dan satuan yang diminta.</div>
+                    <div class="invalid-feedback">Pilih barang yang diminta.</div>
                 </div>
-                <script>
-                // Script untuk mengisi dropdown satuan berdasarkan barang yang dipilih
-                    document.getElementById('barang').addEventListener('change', function () {
-                    const satuanDropdown = document.getElementById('satuan');
-
-                    // Kosongkan dropdown satuan
-                    satuanDropdown.innerHTML = '<option value="">-- Pilih Satuan --</option>';
-
-                    // Tambahkan opsi tetap: pcs dan pack
-                    const satuanOptions = ["pcs", "pack"];
-                    satuanOptions.forEach(function (item) {
-                        const option = document.createElement('option');
-                        option.value = item;
-                        option.textContent = item;
-                        satuanDropdown.appendChild(option);
-                    });
-                });
-                </script>
 
                 <div class="mb-3">
                     <label for="jumlah" class="form-label">Jumlah Barang yang Diminta:</label>
                     <input type="number" id="jumlah" name="jumlah" class="form-control" required min="1">
                     <div class="invalid-feedback">Jumlah barang tidak mencukupi.</div>
+                </div>
+
+                <!-- Dropdown Satuan -->
+                <div class="mb-3">
+                    <label for="satuan" class="form-label">Satuan Barang:</label>
+                    <select id="satuan" name="satuan" class="form-select" required>
+                        <option value="">-- Pilih Satuan --</option>
+                    </select>
+                    <div class="invalid-feedback">Pilih satuan barang.</div>
+                </div>
+                
+                <script>
+                    // Script untuk mengisi dropdown satuan berdasarkan barang yang dipilih
+                    document.getElementById('barang').addEventListener('change', function () {
+                        const satuanDropdown = document.getElementById('satuan');
+
+                        // Kosongkan dropdown satuan
+                        satuanDropdown.innerHTML = '<option value="">-- Pilih Satuan --</option>';
+
+                        // Tambahkan opsi tetap: pcs dan pack
+                        const satuanOptions = ["pcs", "pack"];
+                        satuanOptions.forEach(function (item) {
+                            const option = document.createElement('option');
+                            option.value = item;
+                            option.textContent = item;
+                            satuanDropdown.appendChild(option);
+                        });
+                    });
+                </script>
+
+                <!-- Catatan Pemohon -->
+                <!-- Catatan Pemohon -->
+                <div class="mb-3">
+                    <label for="catatan_pemohon" class="form-label">Catatan Pemohon:</label>
+                    <textarea id="catatan_pemohon" name="catatan_pemohon" class="form-control" rows="3" maxlength="25"></textarea>
                 </div>
 
                 <!-- Tanda Tangan Digital -->
@@ -255,17 +264,6 @@ date_default_timezone_set('Asia/Jakarta');
             } else {
                 e.preventDefault();
                 alert('Tanda tangan diperlukan!');
-            }
-        });
-
-        // Update jumlah stok ketika barang dipilih
-        const barangSelect = document.getElementById('barang');
-        const jumlahInput = document.getElementById('jumlah');
-        barangSelect.addEventListener('change', () => {
-            const selectedOption = barangSelect.options[barangSelect.selectedIndex];
-            const stok = selectedOption.getAttribute('data-stok');
-            if (stok) {
-                jumlahInput.setAttribute('max', stok);
             }
         });
 

@@ -3,21 +3,21 @@ include 'database.php';
 
 // Ambil data dari form
 $nama = $_POST['nama'];
-$id_pemohon = $_POST['id'];
 $departemen = $_POST['departemen'];
 $telepon = $_POST['telepon'];
 $tanggal = $_POST['tanggal'];
 $barang = $_POST['barang'];
 $satuan = $_POST['satuan'];
 $jumlah = $_POST['jumlah'];
+$catatan_pemohon = $_POST['catatan_pemohon']; // Tambahkan catatan pemohon
 $signature = $_POST['signature'];
 
 // Masukkan data permintaan ke dalam database
-$query = "INSERT INTO permintaan_barang (nama, id_pemohon, departemen, telepon, tanggal, barang, jumlah, satuan, signature) 
+$query = "INSERT INTO permintaan_barang (nama, departemen, telepon, tanggal, barang, jumlah, satuan, catatan_pemohon, signature) 
           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 if ($stmt = $conn->prepare($query)) {
-    $stmt->bind_param("sssssssss", $nama, $id_pemohon, $departemen, $telepon, $tanggal, $barang, $jumlah, $satuan, $signature);
+    $stmt->bind_param("sssssssss", $nama, $departemen, $telepon, $tanggal, $barang, $jumlah, $satuan, $catatan_pemohon, $signature);
     if ($stmt->execute()) {
         // Ambil ID permintaan yang baru saja dimasukkan
         $id_permintaan = $conn->insert_id;
@@ -32,3 +32,4 @@ if ($stmt = $conn->prepare($query)) {
     // Menangani jika query gagal
     die("Query preparation failed: " . $conn->error);
 }
+?>

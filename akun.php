@@ -1,37 +1,49 @@
 <?php
 include 'config/database.php';
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $username = $_POST['username'];
-    $password = $_POST['password'];
+session_start();
 
-    // Query untuk mengambil data admin berdasarkan username
-    $query = "SELECT * FROM admin WHERE username = '$username'";
+// Jika tidak ada sesi admin, arahkan ke login
+if (!isset($_SESSION['admin'])) {
+    header("Location: login.php");
+    exit();
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $username = $_SESSION['admin'];
+    $old_password = $_POST['old_password'];
+    $new_password = $_POST['new_password'];
+    $confirm_password = $_POST['confirm_password'];
+
+    // Verifikasi password lama
+    $query = "SELECT * FROM admin WHERE username = '$username' AND password = MD5('$old_password')";
     $result = $conn->query($query);
 
     if ($result->num_rows > 0) {
-        $row = $result->fetch_assoc(); // Ambil data admin
-
-        // Verifikasi password menggunakan password_verify() untuk bcrypt
-        if (password_verify($password, $row['password'])) {
-            session_start();
-            $_SESSION['admin'] = $username;
-            header("Location: dashboard.php");
-            exit(); // Tambahkan exit di sini
+        // Cek apakah password baru dan konfirmasi password cocok
+        if ($new_password === $confirm_password) {
+            // Update password
+            $query = "UPDATE admin SET password = MD5('$new_password') WHERE username = '$username'";
+            if ($conn->query($query)) {
+                echo "<script>alert('Password berhasil diubah!'); window.location.href = 'login.php';</script>";
+            } else {
+                echo "<script>alert('Gagal mengubah password!');</script>";
+            }
         } else {
-            echo "<script>alert('Login gagal! Password salah.'); window.location.href = 'login.php';</script>";
+            echo "<script>alert('Password baru dan konfirmasi password tidak cocok.');</script>";
         }
     } else {
-        echo "<script>alert('Login gagal! Username tidak ditemukan.'); window.location.href = 'login.php';</script>";
+        echo "<script>alert('Password lama salah!');</script>";
     }
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Admin</title>
+    <title>Ubah Password</title>
     <link rel="stylesheet" href="assets/css/style.css">
     <style>
         body {
@@ -137,17 +149,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 <body>
     <div class="container">
-        <h1>Login Admin</h1>
-        <form action="login.php" method="POST">
+        <h1>Ubah Password</h1>
+        <form action="akun.php" method="POST">
             <div class="form-group">
-                <label for="username">Username:</label>
-                <input type="text" id="username" name="username" required>
+                <label for="old_password">Password Lama:</label>
+                <input type="password" id="old_password" name="old_password" required>
             </div>
             <div class="form-group">
-                <label for="password">Password:</label>
-                <input type="password" id="password" name="password" required>
+                <label for="new_password">Password Baru:</label>
+                <input type="password" id="new_password" name="new_password" required>
             </div>
-            <button type="submit">Login</button>
+            <div class="form-group">
+                <label for="confirm_password">Konfirmasi Password Baru:</label>
+                <input type="password" id="confirm_password" name="confirm_password" required>
+            </div>
+            <button type="submit">Ubah Password</button>
         </form>
     </div>
 </body>

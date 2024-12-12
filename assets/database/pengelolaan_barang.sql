@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 30 Nov 2024 pada 09.28
+-- Waktu pembuatan: 12 Des 2024 pada 12.30
 -- Versi server: 10.4.32-MariaDB
--- Versi PHP: 8.0.30
+-- Versi PHP: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -30,15 +30,17 @@ SET time_zone = "+00:00";
 CREATE TABLE `admin` (
   `id` int(11) NOT NULL,
   `username` varchar(50) NOT NULL,
-  `password` varchar(255) NOT NULL
+  `email` varchar(100) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `is_logged_in` tinyint(1) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data untuk tabel `admin`
 --
 
-INSERT INTO `admin` (`id`, `username`, `password`) VALUES
-(1, 'admin', '0192023a7bbd73250516f069df18b500');
+INSERT INTO `admin` (`id`, `username`, `email`, `password`, `is_logged_in`) VALUES
+(2, 'zerohige', 'aishialatina@gmail.com', '$2y$10$HKwoFGSk5TfYALwgvpGs2eUNi16Ogdo0Fl.0/PTP3GTZ/b/Qwwft2', 0);
 
 -- --------------------------------------------------------
 
@@ -53,15 +55,6 @@ CREATE TABLE `barang` (
   `satuan` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data untuk tabel `barang`
---
-
-INSERT INTO `barang` (`id`, `nama_barang`, `stok`, `satuan`) VALUES
-(11, 'Pena', 20, 'pcs'),
-(16, 'Buku', 20, 'pcs'),
-(17, 'Pensil', 20, 'pcs');
-
 -- --------------------------------------------------------
 
 --
@@ -71,13 +64,13 @@ INSERT INTO `barang` (`id`, `nama_barang`, `stok`, `satuan`) VALUES
 CREATE TABLE `permintaan_barang` (
   `id` int(11) NOT NULL,
   `nama` varchar(255) NOT NULL,
-  `id_pemohon` varchar(50) NOT NULL,
   `departemen` varchar(100) NOT NULL,
   `telepon` varchar(20) NOT NULL,
   `tanggal` datetime NOT NULL,
   `barang` varchar(255) NOT NULL,
   `jumlah` int(11) NOT NULL,
   `satuan` varchar(50) DEFAULT NULL,
+  `catatan_pemohon` text DEFAULT NULL,
   `signature` text NOT NULL,
   `status` enum('Pending','Disetujui','Ditolak') DEFAULT 'Pending',
   `catatan_admin` text DEFAULT NULL
@@ -91,7 +84,9 @@ CREATE TABLE `permintaan_barang` (
 -- Indeks untuk tabel `admin`
 --
 ALTER TABLE `admin`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `username` (`username`),
+  ADD UNIQUE KEY `email` (`email`);
 
 --
 -- Indeks untuk tabel `barang`
@@ -113,19 +108,19 @@ ALTER TABLE `permintaan_barang`
 -- AUTO_INCREMENT untuk tabel `admin`
 --
 ALTER TABLE `admin`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT untuk tabel `barang`
 --
 ALTER TABLE `barang`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT untuk tabel `permintaan_barang`
 --
 ALTER TABLE `permintaan_barang`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

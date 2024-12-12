@@ -22,7 +22,7 @@ if ($id_permintaan > 0) {
 }
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -132,7 +132,6 @@ if ($id_permintaan > 0) {
             }
         }
     </style>
-
 </head>
 <body>
     <div class="header-container">
@@ -149,11 +148,11 @@ if ($id_permintaan > 0) {
             </div>
             <div class="letter-body">
                 <p><strong>Nama Pemohon:</strong> <?= htmlspecialchars($row['nama']) ?></p>
-                <p><strong>ID Pemohon:</strong> <?= htmlspecialchars($row['id_pemohon']) ?></p>
                 <p><strong>Departemen:</strong> <?= htmlspecialchars($row['departemen']) ?></p>
                 <p><strong>Barang Diminta:</strong> <?= htmlspecialchars($row['barang']) ?></p>
                 <p><strong>Jumlah:</strong> <?= htmlspecialchars($row['jumlah']) ?></p>
                 <p><strong>Satuan:</strong> <?= htmlspecialchars($row['satuan']) ?></p>
+                <p><strong>Catatan Pemohon:</strong> <?= htmlspecialchars($row['catatan_pemohon'] ?? 'Tidak ada catatan') ?></p>
                 <p><strong>Tanggal Permintaan:</strong> <?= date('Y-m-d', strtotime($row['tanggal'])) ?></p>
                 <p><strong>Status:</strong> 
                     <span class="badge bg-<?= strtolower($row['status']) === 'disetujui' ? 'success' : (strtolower($row['status']) === 'ditolak' ? 'danger' : 'warning') ?>">

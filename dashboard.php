@@ -65,6 +65,8 @@ if (!$result_barang) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Admin</title>
+    <!-- Tambahkan Font Awesome CDN di bagian head -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <style>
@@ -93,9 +95,38 @@ if (!$result_barang) {
             font-weight: bold;
         }
 
-
         .container {
             margin-top: 50px;
+        }
+
+        .profile-container {
+            display: flex;
+            align-items: center;
+            margin-left: 680px;
+        }
+
+        .profile-icon {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            margin-right: 10px;
+            object-fit: cover;
+        }
+
+        .profile-link {
+            color: white;
+            font-size: 3rem;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+
+        .profile-link i {
+            margin-right: 5px;
+        }
+
+        .profile-link:hover {
+            text-decoration: underline;
         }
 
         h1 {
@@ -144,18 +175,6 @@ if (!$result_barang) {
 
         /* Animasi pada form tambah barang */
         .form-container {
-            animation: slideIn 1s ease-out;
-        }
-
-        @keyframes slideIn {
-            from {
-                transform: translateX(-50px);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
         }
 
         /* Responsif untuk tampilan mobile */
@@ -177,16 +196,25 @@ if (!$result_barang) {
             }
         }
     </style>
-</head>
+</head >
 <body>
-
 <div class="header-container">
-    <img src="assets/gambar/fttk1.png" alt="Logo Kampus">
+    <!-- Logo di sebelah kiri -->
+    <img src="assets/gambar/fttk1.png" alt="Logo Kampus" class="logo">
+    
+    <!-- Nama Kampus di sebelah kiri -->
     <div class="campus-name">Fakultas Teknik dan Teknologi Kemaritiman</div>
+    
+    <!-- Profil dan tombol Kelola Profil di sebelah kanan -->
+    <div class="profile-container">
+        <!-- Ikon untuk kelola profil -->
+        <a href="profil.php" class="profile-link">
+            <i class="fas fa-user-cog"> </i>
+        </a>
+    </div>
 </div>
 
 <div class="container">
-    <h1 class="text-center">Halo Admin</h1>
     <nav class="mb-4">
         <ul class="nav nav-pills justify-content-center">
             <li class="nav-item">
@@ -200,7 +228,7 @@ if (!$result_barang) {
 
     <!-- Manajemen Barang -->
     <section id="manage-items" class="form-container">
-        <h2 class="text-center mb-4">Manajemen Barang</h2>
+        <h5 class="text-center mb-4">Tambah Barang & Stok</h5>
         <form action="" method="POST" class="row g-3">
             <div class="col-md-6">
                 <label for="nama_barang" class="form-label">Nama Barang:</label>

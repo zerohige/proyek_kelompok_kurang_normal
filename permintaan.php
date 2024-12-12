@@ -1,82 +1,14 @@
 <?php
 session_start();
 include 'config/database.php';
+include 'config/update_permintaan.php';
+include 'config/delete_permintaan.php';
 
-// Periksa apakah admin sudah login
 if (!isset($_SESSION['admin'])) {
     header("Location: login.php");
     exit();
 }
 
-// Bagian untuk memperbarui status dan catatan permintaan
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_id'])) {
-    $update_id = intval($_POST['update_id']);
-    $status = $conn->real_escape_string($_POST['status']);
-    $catatan_admin = $conn->real_escape_string(trim($_POST['catatan_admin']));
-
-    // Ambil data barang yang diminta
-    $query = "SELECT barang, jumlah FROM permintaan_barang WHERE id = $update_id";
-    $result = $conn->query($query);
-    if ($result && $row = $result->fetch_assoc()) {
-        $barang = $row['barang'];
-        $jumlah = $row['jumlah'];
-        
-        // Cek apakah status permintaan menjadi Disetujui
-        if ($status === 'Disetujui') {
-            // Ambil stok barang yang tersedia
-            $stok_query = "SELECT stok FROM barang WHERE nama_barang = '$barang'";
-            $stok_result = $conn->query($stok_query);
-            if ($stok_result && $stok_row = $stok_result->fetch_assoc()) {
-                $stok_tersedia = $stok_row['stok'];
-
-                // Pastikan stok cukup
-                if ($stok_tersedia >= $jumlah) {
-                    // Update stok barang
-                    $new_stok = $stok_tersedia - $jumlah;
-                    $update_stok_query = "UPDATE barang SET stok = $new_stok WHERE nama_barang = '$barang'";
-                    if ($conn->query($update_stok_query)) {
-                        // Update status permintaan dan catatan admin
-                        $update_query = "UPDATE permintaan_barang SET status = '$status', catatan_admin = '$catatan_admin' WHERE id = $update_id";
-                        if ($conn->query($update_query)) {
-                            echo "<script>alert('Permintaan berhasil diperbarui dan stok berhasil diperbarui!'); window.location.href = 'permintaan.php';</script>";
-                        } else {
-                            echo "<script>alert('Gagal memperbarui permintaan: " . $conn->error . "'); window.history.back();</script>";
-                        }
-                    } else {
-                        echo "<script>alert('Gagal memperbarui stok barang: " . $conn->error . "'); window.history.back();</script>";
-                    }
-                } else {
-                    echo "<script>alert('Stok barang tidak mencukupi untuk memenuhi permintaan.'); window.history.back();</script>";
-                }
-            } else {
-                echo "<script>alert('Barang tidak ditemukan.'); window.history.back();</script>";
-            }
-        } else {
-            // Jika status bukan Disetujui, hanya update status dan catatan admin
-            $update_query = "UPDATE permintaan_barang SET status = '$status', catatan_admin = '$catatan_admin' WHERE id = $update_id";
-            if ($conn->query($update_query)) {
-                echo "<script>alert('Permintaan berhasil diperbarui!'); window.location.href = 'permintaan.php';</script>";
-            } else {
-                echo "<script>alert('Gagal memperbarui permintaan: " . $conn->error . "'); window.history.back();</script>";
-            }
-        }
-    } else {
-        echo "<script>alert('Data permintaan tidak ditemukan.'); window.history.back();</script>";
-    }
-}
-
-// Bagian untuk menghapus permintaan barang
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
-    $delete_id = intval($_POST['delete_id']);
-    $delete_query = "DELETE FROM permintaan_barang WHERE id = $delete_id";
-    if ($conn->query($delete_query)) {
-        echo "<script>alert('Permintaan berhasil dihapus!'); window.location.href = 'permintaan.php';</script>";
-    } else {
-        echo "<script>alert('Gagal menghapus permintaan: " . $conn->error . "'); window.history.back();</script>";
-    }
-}
-
-// Ambil data permintaan barang
 $query_permintaan = "SELECT * FROM permintaan_barang";
 $result_permintaan = $conn->query($query_permintaan);
 
@@ -92,105 +24,76 @@ if (!$result_permintaan) {
     <title>Permintaan Barang</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        // Fungsi untuk konfirmasi penghapusan
-        function confirmDelete() {
-            return confirm('Apakah Anda yakin ingin menghapus permintaan ini? Permintaan ini tidak dapat dipulihkan.');
-        }
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery/dist/jquery.min.js"></script>
     <style>
-        /* Gaya untuk header */
+        body {
+            background-color: #f4f6f9;
+            font-family: 'Arial', sans-serif;
+        }
+
         .header-container {
             background-color: #00274d;
+            padding: 20px 0;
             color: white;
-            padding: 20px;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
         }
 
         .header-container img {
-            max-width: 150px;
+            max-width: 200px;
             height: auto;
         }
 
         .header-container .campus-name {
             font-size: 1.5rem;
+            margin-left: 20px;
             font-weight: bold;
-            margin-top: 10px;
         }
 
-        /* Gaya untuk tabel dan tombol */
-        .table th, .table td {
-            text-align: center;
+        .container {
+            margin-top: 50px;
         }
 
-        .table-hover tbody tr:hover {
-            background-color: #f1f1f1;
+        h1 {
+            color: #333;
+            font-size: 2.5rem;
+            margin-bottom: 30px;
         }
 
-        .btn-danger, .btn-primary {
-            transition: background-color 0.3s ease;
+        .nav-link {
+            font-weight: bold;
         }
 
-        .btn-danger:hover {
-            background-color: #dc3545;
-        }
-
-        .btn-primary:hover {
-            background-color: #0056b3;
+        .nav-pills .nav-link.active {
+            background-color: #007bff;
         }
 
         .table-responsive {
             margin-top: 30px;
         }
-
-        /* Animasi pada tombol dan form */
-        .btn, .form-control, .form-select {
-            transition: all 0.3s ease;
-        }
-
-        .btn:hover, .form-control:hover, .form-select:hover {
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-        }
-
-        /* Responsif untuk tampilan mobile */
-        @media (max-width: 768px) {
-            .container {
-                padding: 0 15px;
-            }
-            h1 {
-                font-size: 1.8rem;
-            }
-            .table th, .table td {
-                font-size: 0.9rem;
-            }
-        }
     </style>
 </head>
 <body>
-    <div class="header-container">
-    <div class="d-flex justify-content-start align-items-center">
-            <img src="assets/gambar/fttk1.png" alt="Logo Kampus">
-            <div class="campus-name">Fakultas Teknik dan Teknologi Kemaritiman</div>
-        </div>
-    </div>
-
-        <div class="container mt-5">
-        <h1 class="text-center mb-4">Permintaan Barang</h1>
-
-        <nav class="mb-4">
-            <ul class="nav nav-pills justify-content-center">
-                <li class="nav-item">
-                    <a class="nav-link" href="dashboard.php">Manajemen Barang</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link active" href="#">Permintaan Barang</a>
-                </li>
-            </ul>
-        </nav>
-        </div>
+<div class="header-container">
+    <img src="assets/gambar/fttk1.png" alt="Logo Kampus">
+    <div class="campus-name">Fakultas Teknik dan Teknologi Kemaritiman</div>
+</div>
+    <div class="container">
+    <nav class="mb-4">
+        <ul class="nav nav-pills justify-content-center">
+            <li class="nav-item">
+                <a class="nav-link" href="dashboard.php">Manajemen Barang</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active" href="#">Permintaan Barang</a>
+            </li>
+        </ul>
+    </nav>
 
         <!-- Tombol Unduh PDF -->
         <form action="config/permintaanpdf.php" method="POST" class="mb-4 text-center">
-            <button type="submit" class="btn btn-primary">Unduh Semua Permintaan sebagai PDF</button>
+            <button type="submit" class="btn btn-primary">Unduh Rekap ke PDF</button>
         </form>
 
         <!-- Tabel Permintaan Barang -->
@@ -199,26 +102,28 @@ if (!$result_permintaan) {
                 <thead class="table-dark">
                     <tr>
                         <th>Nama</th>
-                        <th>ID</th>
                         <th>Departemen</th>
+                        <th>Telepon</th>
                         <th>Barang</th>
                         <th>Jumlah</th>
                         <th>Satuan</th>
+                        <th>Catatan Pemohon</th>
                         <th>Tanggal</th>
                         <th>Status</th>
-                        <th>Catatan</th>
+                        <th>Catatan Admin</th>
                         <th>Aksi</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id="permintaan-table-body">
                     <?php while ($row = $result_permintaan->fetch_assoc()): ?>
-                        <tr>
+                        <tr id="row-<?= htmlspecialchars($row['id']) ?>">
                             <td><?= htmlspecialchars($row['nama']) ?></td>
-                            <td><?= htmlspecialchars($row['id_pemohon']) ?></td>
                             <td><?= htmlspecialchars($row['departemen']) ?></td>
+                            <td><?= htmlspecialchars($row['telepon']) ?></td>
                             <td><?= htmlspecialchars($row['barang']) ?></td>
                             <td><?= htmlspecialchars($row['jumlah']) ?></td>
                             <td><?= htmlspecialchars($row['satuan']) ?></td>
+                            <td><?= htmlspecialchars($row['catatan_pemohon'] ?? 'Tidak ada catatan') ?></td>
                             <td><?= date('Y-m-d', strtotime($row['tanggal'])) ?></td>
                             <td>
                                 <span class="badge bg-<?= strtolower($row['status']) === 'disetujui' ? 'success' : (strtolower($row['status']) === 'ditolak' ? 'danger' : 'warning') ?>">
@@ -227,26 +132,8 @@ if (!$result_permintaan) {
                             </td>
                             <td><?= htmlspecialchars($row['catatan_admin']) ?></td>
                             <td>
-                                <!-- Form untuk memperbarui status dan catatan -->
-                                <form action="" method="POST" class="mb-2">
-                                    <input type="hidden" name="update_id" value="<?= htmlspecialchars($row['id']) ?>">
-                                    <div class="mb-2">
-                                        <select name="status" class="form-select form-select-sm">
-                                            <option value="Pending" <?= $row['status'] === 'Pending' ? 'selected' : '' ?>>Pending</option>
-                                            <option value="Disetujui" <?= $row['status'] === 'Disetujui' ? 'selected' : '' ?>>Disetujui</option>
-                                            <option value="Ditolak" <?= $row['status'] === 'Ditolak' ? 'selected' : '' ?>>Ditolak</option>
-                                        </select>
-                                    </div>
-                                    <div class="mb-2">
-                                        <input type="text" name="catatan_admin" class="form-control form-control-sm" placeholder="Catatan Admin" value="<?= htmlspecialchars($row['catatan_admin']) ?>">
-                                    </div>
-                                    <button type="submit" class="btn btn-primary btn-sm">Perbarui</button>
-                                </form>
-                                <!-- Form untuk menghapus permintaan -->
-                                <form action="" method="POST" onsubmit="return confirmDelete();">
-                                    <input type="hidden" name="delete_id" value="<?= htmlspecialchars($row['id']) ?>">
-                                    <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
-                                </form>
+                                <button class="btn btn-primary btn-sm edit-button" data-id="<?= $row['id'] ?>" data-bs-toggle="modal" data-bs-target="#editModal">Edit</button>
+                                <button class="btn btn-danger btn-sm delete-button" data-id="<?= $row['id'] ?>">Hapus</button>
                             </td>
                         </tr>
                     <?php endwhile; ?>
@@ -254,5 +141,87 @@ if (!$result_permintaan) {
             </table>
         </div>
     </div>
+
+    <!-- Modal Edit -->
+    <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editModalLabel">Edit Permintaan</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editForm">
+                        <input type="hidden" id="edit-id">
+                        <div class="mb-3">
+                            <label for="edit-status" class="form-label">Status</label>
+                            <select id="edit-status" class="form-select">
+                                <option value="Pending">Pending</option>
+                                <option value="Disetujui">Disetujui</option>
+                                <option value="Ditolak">Ditolak</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit-catatan" class="form-label">Catatan Admin</label>
+                            <textarea id="edit-catatan" class="form-control"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Edit Button Click
+        $('.edit-button').on('click', function () {
+            const id = $(this).data('id');
+            const row = $('#row-' + id);
+            const status = row.find('span').text().trim();
+            const catatan = row.find('td:nth-child(10)').text().trim();
+
+            $('#edit-id').val(id);
+            $('#edit-status').val(status);
+            $('#edit-catatan').val(catatan);
+        });
+
+        // Save Edit Form
+        $('#editForm').on('submit', function (e) {
+            e.preventDefault();
+            const id = $('#edit-id').val();
+            const status = $('#edit-status').val();
+            const catatan = $('#edit-catatan').val();
+
+            $.ajax({
+                url: 'config/update_permintaan.php',
+                method: 'POST',
+                data: { id, status, catatan },
+                success: function (response) {
+                    location.reload();
+                },
+                error: function () {
+                    alert('Gagal memperbarui data.');
+                }
+            });
+        });
+
+        // Delete Button Click
+        $('.delete-button').on('click', function () {
+            if (confirm('Apakah Anda yakin ingin menghapus permintaan ini?')) {
+                const id = $(this).data('id');
+                $.ajax({
+                    url: 'config/delete_permintaan.php',
+                    method: 'POST',
+                    data: { id },
+                    success: function () {
+                        location.reload();
+                    },
+                    error: function () {
+                        alert('Gagal menghapus data.');
+                    }
+                });
+            }
+        });
+    </script>
 </body>
 </html>
